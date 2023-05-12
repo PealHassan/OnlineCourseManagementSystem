@@ -65,7 +65,6 @@ input[type="submit"]:first-child {
   margin-right: 10px;
 }
 	</style>
-	<!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
 </head>
 <body>
 	

@@ -32,7 +32,7 @@
 	}
 	
 	JOptionPane.showMessageDialog(null, "UserName or Password Doesn't Match", "Log In Failed", JOptionPane.ERROR_MESSAGE);
-	response.sendRedirect("index.jsp"); 
+	response.sendRedirect("Home.jsp"); 
 
 %>
 

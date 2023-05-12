@@ -99,15 +99,15 @@
 	<nav>
 		<ul>
 			<li class="active"><a href="CourseEnroll.jsp">Courses</a></li>
-			<li><a href="index.jsp">View registered courses</a></li>
-			<li><a href="index.jsp">Log out</a></li>
+			<li><a href="Home.jsp">View registered courses</a></li>
+			<li><a href="Home.jsp">Log out</a></li>
 		</ul>
 	</nav>
 <div class = "margin">
 	<div class="course">
 		<h2>Structured Programming Language</h2>
-		<p>CSE133</p>
-		<a href="CourseDetails.jsp" >Enroll Now</a>
+		<p>CSE133</p> 
+		<a href="CourseDetails.jsp?courseId=CSE133&courseName=Structured+Programming+Language" >Enroll Now</a>
 	</div>
 	<div class="course">
 		<h2>Structured Programming Language Lab</h2>
@@ -204,6 +204,7 @@
 		<p>STA202D</p>
 		<a href="CourseDetails.jsp">Enroll Now</a>
 	</div>
+	
 	
 </div>
 	
