@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="java.net.URLEncoder" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -104,10 +105,17 @@
 		</ul>
 	</nav>
 <div class = "margin">
+	<%
+		String studentId = (String)(request.getParameter("studentId"));
+		String usertype = (String) (request.getParameter("usertype"));
+		
+		
+	%>
+
 	<div class="course">
 		<h2>Structured Programming Language</h2>
 		<p>CSE133</p> 
-		<a href="CourseDetails.jsp?courseId=CSE133&courseName=Structured+Programming+Language" >Enroll Now</a>
+		<a href="CourseDetails.jsp?courseId=cse133&courseName=Structured+Programming+Language&studentId=<%= URLEncoder.encode(studentId, "UTF-8")%>&usertype=<%= URLEncoder.encode(usertype, "UTF-8") %>">Enroll Now</a>
 	</div>
 	<div class="course">
 		<h2>Structured Programming Language Lab</h2>

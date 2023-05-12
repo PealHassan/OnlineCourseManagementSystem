@@ -134,7 +134,7 @@ input[type="submit"]:first-child {
       <div class="pane pane-1">
         <h2>Teacher</h2>
         <h1>Login or Sign Up</h1>
-		<form action = "validate.jsp" method = "post">
+		<form action = "validate.jsp?user_type=teacher" method = "post">
 			<label for="username" class='left'>Username:</label>
 			<input type="text" id="username" name="username"><br><br>
 			<label for="password" class = 'left'>Password:</label>
@@ -146,7 +146,7 @@ input[type="submit"]:first-child {
       <div class="pane pane-2">
         <h2>Student</h2>
        <h1>Login or Sign Up</h1>
-		<form action = "validate.jsp" method = "post">
+		<form action = "validate.jsp?user_type=student" method = "post">
 			<label for="username" class='left'>Username:</label>
 			<input type="text" id="username" name="username"><br><br>
 			<label for="password" class = 'left'>Password:</label>
@@ -158,7 +158,7 @@ input[type="submit"]:first-child {
       <div class="pane pane-3">
         <h2>Admin</h2>
         <h1>Login or Sign Up</h1>
-		<form action = "validate.jsp" method = "post">
+		<form action = "validate.jsp?user_type=admin" method = "post">
 			<label for="username" class='left'>Username:</label>
 			<input type="text" id="username" name="username"><br><br>
 			<label for="password" class = 'left'>Password:</label>

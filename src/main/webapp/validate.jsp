@@ -14,7 +14,7 @@
 <%
 	String username = (String) request.getParameter("username");
 	String password = (String) request.getParameter("password");
-	String usertype = (String) request.getAttribute("userType");    
+	String usertype = (String) request.getParameter("user_type"); 
 	String url = "jdbc:mysql://localhost:3306/MiduPeal";
 	String user = "root";
 	String pass = "midupeal";
@@ -24,16 +24,15 @@
 	Statement st = con.createStatement();
 	ResultSet rs = st.executeQuery(sql);
 	while(rs.next()) {
-		if(rs.getString("username").equals(username) && rs.getString("password").equals(password)) {
-			response.sendRedirect("CourseEnroll.jsp");
+		if(rs.getString("username").equals(username) && rs.getString("password").equals(password) && rs.getString("user_type").equals(usertype)) {
+			if(usertype.equals("student")) response.sendRedirect(String.format("CourseEnroll.jsp?%sId=%s&usertype=%s",usertype,rs.getString("id"),usertype));
+			if(usertype.equals("admin")) response.sendRedirect(String.format("AdminPage.jsp?%sId=%s&usertype=%s",usertype,rs.getString("id"),usertype));
 			return;
-			
-		}
-	}
+		} 
+ 	}
 	
-	JOptionPane.showMessageDialog(null, "UserName or Password Doesn't Match", "Log In Failed", JOptionPane.ERROR_MESSAGE);
-	response.sendRedirect("Home.jsp"); 
-
+ 	JOptionPane.showMessageDialog(null, "UserName or Password Doesn't Match", "Log In Failed", JOptionPane.ERROR_MESSAGE);
+	response.sendRedirect("Home.jsp");
 %>
 
 
