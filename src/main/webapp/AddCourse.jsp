@@ -9,6 +9,7 @@
 </head>
 <body>
 <%
+	
 	String course_name = request.getParameter("course_name");
 	String course_id = request.getParameter("courseId");
 	String course_description = request.getParameter("course_description");
@@ -43,6 +44,7 @@
 			break;
 		}
 	}
+	response.sendRedirect("AdminPage.jsp");
 %>
 </body>
 </html>

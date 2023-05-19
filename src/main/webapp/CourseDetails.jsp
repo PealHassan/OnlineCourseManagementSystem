@@ -42,9 +42,9 @@
 		  border-radius: 5px; /* Add rounded corners */
 		}
 
-.btn:hover {
-  background-color: #3e8e41; /* Darker green on hover */
-}
+		.btn:hover {
+		  background-color: #3e8e41; /* Darker green on hover */
+		}
 		
 		
 		
@@ -52,10 +52,10 @@
 	</style>
 </head>
 <body>
-	<div class="course-details">
+	<%-- <div class="course-details">
 		<h1 >Successfully Enrolled</h1>
 		<h2><%out.println(request.getParameter("courseName")); %></h2>
-		<p>Course ID: <%out.println(request.getParameter("courseId")); %></p>
+		<p>Course ID: <%out.println(request.getParameter("courseId")); %></p> --%>
 		<%
 			String courseId = (String) (request.getParameter("courseId"));
 			String studentId = (String) (request.getParameter("studentId"));
@@ -71,8 +71,9 @@
 			Statement st = con.createStatement();
 			st.executeUpdate(sql);
 			String back = "location.href='CourseEnroll.jsp?studentId="+studentId+"'";
+			response.sendRedirect("CourseEnroll.jsp?studentId="+studentId+"&usertype="+usertype);
 		%>
-		<a class = "btn" href="CourseEnroll.jsp?studentId=<%= URLEncoder.encode(studentId, "UTF-8")%>&usertype=<%= URLEncoder.encode(usertype, "UTF-8")%>">Done</a>
+		<%-- <a class = "btn" href="CourseEnroll.jsp?studentId=<%= URLEncoder.encode(studentId, "UTF-8")%>&usertype=<%= URLEncoder.encode(usertype, "UTF-8")%>">Confirm</a> --%>
 		
 	</div>
 </body>

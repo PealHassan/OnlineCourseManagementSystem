@@ -1,3 +1,4 @@
+<%@ page import="java.sql.*,com.mysql.jdbc.Driver"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -58,11 +59,38 @@
 		input[type="submit"]:hover {
 			background-color: #00cc00;
 		}
+		.logout-btn {
+		position: fixed;
+		bottom: 100px;
+		right: 915px;
+	}
+
+	.logout-btn a {
+		display: inline-block;
+		padding: 10px 20px;
+		background-color: #f44336;
+		color: #fff;
+		text-decoration: none;
+		border-radius: 5px;
+		font-size: 16px;
+		transition: background-color 0.3s ease;
+	}
+
+	.logout-btn a:hover {
+		background-color: #d32f2f;
+	}
 		
 	</style>
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+	
+	
 </head>
 <body>
-	<form method="post" action="AddCourse.jsp">
+<div class="logout-btn">
+			<a href="Home.jsp" class="btn btn-primary">Logout</a>
+		</div>
+
+	<form method="post" action = "AddCourse.jsp" id = "course-form">
 		<h1>Add New Course</h1>
 		<label for="course-name" name = "course_name"><b>Course Name:</b></label>
 		<input type="text" id="course-name" name="course_name" placeholder="Enter course name" required>
@@ -80,6 +108,25 @@
 		<textarea id="course-description" name = "course_description" placeholder="Enter course description" required></textarea>
 
 		<input type="submit" value="Add Course">
+		<script>
+		  // Select the form element
+		  const form = document.querySelector('form');
+		
+		  // Add a submit event listener to the form element
+		  form.addEventListener('submit', (event) => {
+		    // Prevent the default form submission behavior
+		    event.preventDefault();
+		
+		    // Display the Sweet Alert
+		    swal("Course added!", "Your course has been successfully added.", "success")
+		    .then(() => {
+		      // Submit the form
+		      form.submit();
+		    });
+		  });
+		</script>
+		
+		
 	</form>
 </body>
 </html>

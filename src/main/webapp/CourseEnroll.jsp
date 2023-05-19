@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.net.URLEncoder" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="java.sql.*,com.mysql.jdbc.Driver"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,10 +14,11 @@
 			width: 500px;
 			display: inline-block;
 			padding: 10px;
+			margin-right:10px;
 			margin-bottom: 20px;
 			background-color: #f2f2f2;
 			border-radius: 5px;
-			box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+			box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
 		}
 		.course h2 {
 			margin-top: 0;
@@ -70,13 +74,20 @@
 			padding: 0;
 			overflow: hidden;
 		}
+		nav a {
+      display: block;
+      color: white;
+      padding: 10px;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
 		
 		nav li {
 			float: left;
 			margin-right: 10px;
 		}
 		
-		nav a {
+		input[type = 'submit'] {
 			display: block;
 			color: white;
 			text-align: center;
@@ -92,129 +103,103 @@
 		nav a:hover {
 			background-color: #555;
 		}
+		.btn {
+		  background-color: #4CAF50; /* Set background color */
+		  border: none; /* Remove border */
+		  color: white; /* Set text color */
+		  padding: 12px 24px; /* Set padding */
+		  text-align: center; /* Center text */
+		  text-decoration: none; /* Remove underline */
+		  display: inline-block; /* Make button inline */
+		  font-size: 16px; /* Set font size */
+		  cursor: pointer; /* Change cursor on hover */
+		  border-radius: 4px; /* Add rounded corners */
+		  transition: background-color 0.3s ease; /* Add smooth hover effect */
+		}
+
+.my-button:hover {
+  background-color: #3e8e41; /* Change background color on hover */
+}
+		
 	</style>
 </style>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </head>
 <body>
-<h1>Course Registration</h1>
+
+	<%
+	    String studentId = (String)(request.getParameter("studentId"));
+	    String usertype = (String) (request.getParameter("usertype"));
+	    String url = "jdbc:mysql://localhost:3306/MiduPeal";
+	    String username = "root";
+	    String password = "midupeal";
+	    Class.forName("com.mysql.jdbc.Driver");
+	    Connection con = DriverManager.getConnection(url,username,password);
+	    String sql = String.format("(select course_id from MiduPeal.enrollments where student_id = '%s')",studentId);
+	    String sql2 = "select * from MiduPeal.courses where course_id not in " + sql;
+	    Statement st = con.createStatement();
+	    ResultSet rs = st.executeQuery(sql2);
+	    
+	    
+	    Statement st2 = con.createStatement();
+	    sql2 = "select count(*) from MiduPeal.courses where course_id not in " + sql;
+	    ResultSet rs2 = st2.executeQuery(sql2);
+	    rs2.next();
+	    int tot = rs2.getInt(1);
+	%>
+	<h1>Course Registration</h1>
 	<nav>
 		<ul>
-			<li class="active"><a href="CourseEnroll.jsp">Courses</a></li>
-			<li><a href="Home.jsp">View registered courses</a></li>
+			<li class="active"><a href="CourseEnroll.jsp?studentId=<%= URLEncoder.encode(studentId, "UTF-8")%>&usertype=<%= URLEncoder.encode(usertype, "UTF-8")%>">Courses</a></li>
+			<li><a href="ViewRegisteredCourse.jsp?studentId=<%= URLEncoder.encode(studentId, "UTF-8")%>&usertype=<%= URLEncoder.encode(usertype, "UTF-8")%>">View registered courses</a></li>
 			<li><a href="Home.jsp">Log out</a></li>
 		</ul>
 	</nav>
-<div class = "margin">
-	<%
-		String studentId = (String)(request.getParameter("studentId"));
-		String usertype = (String) (request.getParameter("usertype"));
+	<div class = "margin">
+		<c:forEach var="i" begin="1" end="<%=tot%>">
+		
+		    <%rs.next();%>
+		    <div class="course">
+				<h2><%out.println(rs.getString("course_name"));%></h2>
+				<p><%out.println(rs.getString("course_id")); %></p>
+				<p>Instructed By:
+					<%
+						String sql3 = "select * from MiduPeal.users where id = '" + rs.getString("teacher_id")+"'";
+						Statement st3 = con.createStatement();
+						ResultSet rs3 = st3.executeQuery(sql3);
+						rs3.next();
+						out.println(rs3.getString("username")); 
+					%>
+				<p><% out.println(rs.getString("course_description")); %></p>
+			
 		
 		
-	%>
-
-	<div class="course">
-		<h2>Structured Programming Language</h2>
-		<p>CSE133</p> 
-		<a href="CourseDetails.jsp?courseId=cse133&courseName=Structured+Programming+Language&studentId=<%= URLEncoder.encode(studentId, "UTF-8")%>&usertype=<%= URLEncoder.encode(usertype, "UTF-8") %>">Enroll Now</a>
+			<form method="post" action="CourseDetails.jsp?courseId=<%= URLEncoder.encode(rs.getString("course_id"), "UTF-8")%>&courseName=<%= URLEncoder.encode(rs.getString("course_name"), "UTF-8")%>&studentId=<%= URLEncoder.encode(studentId, "UTF-8")%>&usertype=<%= URLEncoder.encode(usertype, "UTF-8") %>">
+			    <input type="submit" value="Add Course" class="add-course-btn">
+			</form>
+			
+			
+			</div>
+		</c:forEach>
+		<script>
+			    // Select all the "Add Course" buttons
+			    const addCourseButtons = document.querySelectorAll('.add-course-btn');
+			
+			    // Add a click event listener to each "Add Course" button
+			    addCourseButtons.forEach((button) => {
+			        button.addEventListener('click', (event) => {
+			            event.preventDefault();
+			
+			            // Display the Sweet Alert
+			            swal("Course Enrolled!", "Your have been successfully Enrolled.", "success")
+			                .then(() => {
+			                    // Submit the form
+			                    button.parentElement.submit();
+			                });
+			        });
+			    });
+		</script>
 	</div>
-	<div class="course">
-		<h2>Structured Programming Language Lab</h2>
-		<p>CSE134</p>
-		<a href="CourseDetails.jsp" name = "CSE134">Enroll Now</a>
-	</div>
-	<div class="course">
-		<h2>Discrete Mathematics</h2>
-		<p>CSE143</p>
-		<a href="CourseDetails.jsp">Enroll Now</a>
-	</div>
-	<div class="course">
-		<h2>Electrical Circuits</h2>
-		<p>EEE109D</p>
-		<a href="CourseDetails.jsp">Enroll Now</a>
-	</div>
-	<div class="course">
-		<h2>Electrical Circuits Lab</h2>
-		<p>EEE110D</p>
-		<a href="CourseDetails.jsp">Enroll Now</a>
-	</div>
-	<div class="course">
-		<h2>Matrices, Vector Analysis and Geometry</h2>
-		<p>MAT102D</p>
-		<a href="CourseDetails.jsp">Enroll Now</a>
-	</div>
-	<div class="course">
-		<h2>Effective Communication in English</h2>
-		<p>EEE101D</p>
-		<a href="CourseDetails.jsp">Enroll Now</a>
-	</div>
-	<div class="course">
-		<h2>English Language Lab</h2>
-		<p>ENG102D</p>
-		<a href="CourseDetails.jsp">Enroll Now</a>
-	</div>
-	<div class="course">
-		<h2>Data Structure</h2>
-		<p>CSE137</p>
-		<a href="CourseDetails.jsp">Enroll Now</a>
-	</div>
-	<div class="course">
-		<h2>Data Structure Lab</h2>
-		<p>CSE138</p>
-		<a href="CourseDetails.jsp">Enroll Now</a>
-	</div>
-	<div class="course">
-		<h2>Engineering Ethics and Cyber Law</h2>
-		<p>CSE147</p>
-		<a href="CourseDetails.jsp">Enroll Now</a>
-	</div>
-	<div class="course">
-		<h2>Electronic Devices and Circuits</h2>
-		<p>EEE111D</p>
-		<a href="CourseDetails.jsp">Enroll Now</a>
-	</div>
-	<div class="course">
-		<h2>Electronic Devices and Circuits Lab</h2>
-		<p>EEE112D</p>
-		<a href="CourseDetails.jsp">Enroll Now</a>
-	</div>
-	<div class="course">
-		<h2>Engineering Graphics</h2>
-		<p>IPE106D</p>
-		<a href="CourseDetails.jsp">Enroll Now</a>
-	</div>
-	<div class="course">
-		<h2>Workshop Practice</h2>
-		<p>IPE108D</p>
-		<a href="CourseDetails.jsp">Enroll Now</a>
-	</div>
-	<div class="course">
-		<h2>Mechanics, Wave, Heat & Thermodynamics</h2>
-		<p>PHY103D</p>
-		<a href="CourseDetails.jsp">Enroll Now</a>
-	</div>
-	<div class="course">
-		<h2>Calculus</h2>
-		<p>MAT103D</p>
-		<a href="CourseDetails.jsp">Enroll Now</a>
-	</div>
-	<div class="course">
-		<h2>Object Oriented Programming Language</h2>
-		<p>CSE233</p>
-		<a href="CourseDetails.jsp">Enroll Now</a>
-	</div>
-	<div class="course">
-		<h2>Object Oriented Programming Language</h2>
-		<p>CSE234</p>
-		<a href="CourseDetails.jsp">Enroll Now</a>
-	</div>
-	<div class="course">
-		<h2>Basic Statistics & Probability</h2>
-		<p>STA202D</p>
-		<a href="CourseDetails.jsp">Enroll Now</a>
-	</div>
-	
-	
-</div>
 	
 
 </body>

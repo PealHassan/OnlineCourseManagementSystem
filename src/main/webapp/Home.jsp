@@ -1,3 +1,5 @@
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -130,6 +132,8 @@ input[type="submit"]:first-child {
     </style>
   </head>
   <body>
+  
+  
     <div class="pane-container">
       <div class="pane pane-1">
         <h2>Teacher</h2>
@@ -154,6 +158,7 @@ input[type="submit"]:first-child {
 			<input type="submit" value="Login">
 			<input type="submit" value="Sign Up">
 		</form>
+		
       </div>
       <div class="pane pane-3">
         <h2>Admin</h2>
@@ -167,5 +172,27 @@ input[type="submit"]:first-child {
 		</form>
       </div>
     </div>
+    <script>
+    // Check if the status parameter exists in the URL
+	    var urlParams = new URLSearchParams(window.location.search);
+	    if (urlParams.has('status')) {
+	        var status = urlParams.get('status');
+	        // Check if the status is FAILED
+	        if (status === 'FAILED') {
+	            // Check if the errorMessage parameter exists in the URL
+	            if (urlParams.has('errorMessage')) {
+	                var errorMessage = decodeURIComponent(urlParams.get('errorMessage'));
+	                // Display the SweetAlert with the error message
+	                swal({
+	                    title: 'Log In Failed',
+	                    text: errorMessage,
+	                    icon: 'error',
+	                    button: 'OK'
+	                });
+	            }
+	        }
+	    }
+	</script>
+    
   </body>
 </html>

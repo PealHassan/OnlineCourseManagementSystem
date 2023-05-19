@@ -1,83 +1,81 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Login or Sign Up</title>
-	<style>
-	body {
-  font-family: Arial, sans-serif;
-  background-color: #f2f2f2;
-  background-image: url("pic1.jpg");
-  background-size: cover;
-}
+  <head>
+    <title>Online Course Management System</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        background-image: url("pic1.jpg");
+        background-size: cover;
+      }
 
-h1 {
-  text-align: center;
-  margin-top: 50px;
-}
+      .header {
+        text-align: center;
+        padding: 20px;
+        box-shadow: 0 0 100px rgba(0, 0, 0, 1);
+        margin-bottom: 100px;
+      }
 
-form {
-  max-width: 500px;
-  text-align : center;
-  margin: 0 auto;
-  background-color: rgba(255, 255, 255, 0.4);
-  padding: 30px;
-  border-radius: 5px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-}
+      .header h1 {
+        font-size: 32px;
+        margin: 0;
+      }
 
-label {
-  display: block;
-  font-size: 18px;
-  margin-bottom: 10px;
-}
+      .credit {
+        text-align: center;
+        font-size: 200px;
+        color: black;
+        margin-bottom: 20px;
+      }
 
-form input[name="username"],
-input[type="password"] {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 20px;
-  border-radius: 5px;
-  border: none;
-  font-size: 16px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-}
-.left {
-	text-align:left;
-}
+      .btn-group {
+        display: flex;
+        justify-content: center;
+        margin-left: 0px;
+        margin-top: 100px;
+      }
 
-input[type="submit"] {
-  background-color: #4CAF50;
-  color: #fff;
-  font-size: 16px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
+      .btn-group .btn {
+      	color: black;
+        margin: 0 10px;
+        background-color: rgba(255, 255, 255, 0.6);
+        border: none;
+        box-shadow: none;
+      }
 
-input[type="submit"]:hover {
-  background-color: #3e8e41;
-}
+      .btn-group .btn:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
 
-input[type="submit"]:first-child {
-  margin-right: 10px;
-}
-	</style>
-</head>
-<body>
-	
-	<br><br><br><br><br><br><br><br><br><br>
-	<h1>Login or Sign Up</h1>
-	<form action = "validate.jsp" method = "post">
-		<label for="username" class='left'>Username:</label>
-		<input type="text" id="username" name="username"><br><br>
-		<label for="password" class = 'left'>Password:</label>
-		<input type="password" id="password" name="password"><br><br>
-		<input type="submit" value="Login">
-		<input type="submit" value="Sign Up">
-	</form>
-	
-</body>
+      .btn-group .btn i {
+        margin-right: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Online Course Management System</h1>
+    </div>
+    <div class="credit">
+      <p><i>PoshTeam</i></p>
+    </div>
+
+    <div class="container text-center">
+      <div class="btn-group">
+        <a href="student-login.html" class="btn btn-primary btn-lg"><i class="fas fa-user-graduate"></i> Student</a>
+        <a href="teacher-login.html" class="btn btn-primary btn-lg"><i class="fas fa-chalkboard-teacher"></i> Teacher</a>
+        <a href="admin-login.html" class="btn btn-primary btn-lg"><i class="fas fa-user-shield"></i> Admin</a>
+      </div>
+    </div>
+
+    
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
 </html>
