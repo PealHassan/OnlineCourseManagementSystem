@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>PoshTeam</title>
 <style>
 	.course {
 			width: 500px;

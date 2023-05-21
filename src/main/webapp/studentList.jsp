@@ -1,9 +1,10 @@
 <%@ page import="java.sql.*,com.mysql.jdbc.Driver"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="java.net.URLEncoder" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>PoshTeam</title>
+	<title>WebUni - Education Template</title>
 	<meta charset="UTF-8">
 	<meta name="description" content="WebUni Education Template">
 	<meta name="keywords" content="webuni, education, creative, html">
@@ -27,6 +28,7 @@
 	<![endif]-->
 
 </head>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <body>
 	<!-- Page Preloder -->
 	<div id="preloder">
@@ -48,12 +50,12 @@
 				<div class="col-lg-9 col-md-9">
 					<% 
 						String link;
-						if(request.getParameter("Id") != null || request.getParameter("Idt")!=null || request.getParameter("Ida") != null) link = "";
+						if(request.getParameter("Id") != null || request.getParameter("Idt")!=null) link = "";
 						else link = "login.jsp";
 					%>
 					<a href="<%=link %>" class="site-btn header-btn">
 					<%
-						if(request.getParameter("Id") != null || request.getParameter("Idt")!=null || request.getParameter("Ida") != null) {
+						if(request.getParameter("Id") != null || request.getParameter("Idt")!=null) {
 							String url = "jdbc:mysql://localhost:3306/MiduPeal";
 						    String username = "root";
 						    String password = "midupeal";
@@ -62,7 +64,6 @@
 						    String sql = "select * from users where id = '";
 							if(request.getParameter("Id")!=null) sql += request.getParameter("Id");
 							if(request.getParameter("Idt")!=null) sql += request.getParameter("Idt");
-							if(request.getParameter("Ida")!=null) sql += request.getParameter("Ida");
 							sql += "'";
 						    Statement st = con.createStatement();
 						    ResultSet rs = st.executeQuery(sql);
@@ -74,7 +75,7 @@
 					</a>
 					<nav class="main-menu">
 						<%
-							String index="index.jsp",aboutus="aboutus.jsp",courses="courses.jsp",mycourses="mycourses.jsp",classes="teacherCourses.jsp",addCourses = "addCourses.jsp";
+							String index="index.jsp",aboutus="aboutus.jsp",courses="courses.jsp",mycourses="mycourses.jsp",classes="teacherCourses.jsp";
 							if(request.getParameter("Id") != null) {
 								index = index + "?Id=" + request.getParameter("Id");
 								aboutus = aboutus + "?Id=" + request.getParameter("Id");
@@ -86,12 +87,6 @@
 								aboutus = aboutus + "?Idt=" + request.getParameter("Idt");
 								courses = courses + "?Idt=" + request.getParameter("Idt");
 								classes = classes + "?Idt=" + request.getParameter("Idt");
-							}
-                            if(request.getParameter("Ida") != null) {
-								index = index + "?Ida=" + request.getParameter("Ida");
-								aboutus = aboutus + "?Ida=" + request.getParameter("Ida");
-								courses = courses + "?Ida=" + request.getParameter("Ida");
-								addCourses = addCourses + "?Ida=" + request.getParameter("Ida");
 							}
 						%>
 						<ul>
@@ -114,14 +109,7 @@
 							</c:forEach>
 							<%
 				                signupcnt = 0;  
-				               if(request.getParameter("Ida")!=null) signupcnt = 1;   
-			                %>
-							<c:forEach var = "i" begin = "1" end = "<%= signupcnt%>">
-								<li><a href="<%=addCourses%>">Add Course</a></li>
-							</c:forEach>
-							<%
-				                signupcnt = 0;  
-				                if(request.getParameter("Idt")!=null || request.getParameter("Id")!=null || request.getParameter("Ida") != null) signupcnt = 1;   
+				                if(request.getParameter("Idt")!=null || request.getParameter("Id")!=null) signupcnt = 1;   
 			                %>
 							<c:forEach var = "i" begin = "1" end = "<%= signupcnt%>">
 								<li><a href="index.jsp">Log Out</a></li>
@@ -129,6 +117,7 @@
 							
 						</ul>
 					</nav>
+				</div>
 			</div>
 		</div>
 	</header>
@@ -136,68 +125,108 @@
 
 
 	<!-- Page info -->
-	<div class="page-info-section set-bg" data-setbg="img/page-bg/4.jpg">
+	<div class="page-info-section set-bg" data-setbg="img/page-bg/1.jpg">
 		<div class="container">
 			<div class="site-breadcrumb">
-				<a href="<%=index %>">Home</a>
-				<span>About Us</span>
+				<a href="<%= classes %>"> My Classes</a>
+				<span><%=request.getParameter("courseId")%></span>
 			</div>
 		</div>
 	</div>
 	<!-- Page info end -->
 
-
-	<!-- search section -->
-	<section class="search-section ss-other-page">
+    <section class="search-section ss-other-page">
 		<div class="container">
 			<div class="search-warp">
 				<div class="section-title text-white">
-					<h1><span>About Us</span></h1>
+					<h1><span>Student List</span></h1>
 				</div>
-				
 			</div>
 		</div>
 	</section>
+	<!-- Header section end -->
 	<!-- search section end -->
+	<%
+		String url = "jdbc:mysql://localhost:3306/MiduPeal";
+	    String username = "root";
+	    String password = "midupeal";
+	    Class.forName("com.mysql.jdbc.Driver");
+	    Connection con = DriverManager.getConnection(url,username,password);
+	    ResultSet rs;
+	    int tot = 0;
+		
+			String studentId = request.getParameter("Id");
+		    String sql = "(select student_id from enrollments where course_id = '" + request.getParameter("courseId") + "')";
+		    String sql2 = "select * from users where id in " + sql;
+		    Statement st = con.createStatement();
+		    rs = st.executeQuery(sql2);
+		    
+		    Statement st2 = con.createStatement();
+		    sql2 = "select count(*) from users where id  in " + sql;
+		    ResultSet rs2 = st2.executeQuery(sql2);
+		    rs2.next();
+		    tot = rs2.getInt(1);
+%>
+	<section class="intro">
+  <div class="bg-image h-100" style="background-color: #ffffff;">
+    <div class="mask d-flex align-items-center h-100">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-12">
+            <div class="card shadow-2-strong" style="background-color: #f5f7fa;">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-borderless mb-0">
+                    <thead>
+                      <tr>
+                        <!-- th scope="col">
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                          </div>
+                        </th> -->
+                        <th scope="col">UserName</th>
+                        <th scope="col">Student Id</th>
+                        <th scope="col">Email</th>
+                        <!-- do it later -->
+                      </tr>
+                    </thead>
+                    <tbody>
+	                    <c:forEach var = "i" begin = "1" end = "<%=tot %>">
+	                    <%rs.next(); %>
+		                    <tr>
+		                        <!-- <th scope="row">
+		                          <div class="form-check">
+		                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault1" checked/>
+		                          </div>
+		                        </th> -->
+		                        <td><%=rs.getString("username")%></td>
+		                        <td><%=rs.getString("id")%></td>
+		                        <td><%=rs.getString("email")%></td>
+		                        <!-- <td>
+		                          <button type="button" class="btn btn-danger btn-sm px-3">
+		                            <i class="fas fa-times"></i>
+		                          </button>
+		                        </td> -->
+		                      </tr>
+	                    </c:forEach>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-
-
-	<!-- Page -->
-	<section class="mycourses-page spad pb-0">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-10 offset-lg-1">
-					<div class="search-warp">
-						<div class="section-title text-white text-left">
-							<p>Welcome to our Online Course Management System! We are a leading platform dedicated to simplifying the management and administration of online courses. Our mission is to empower educational institutions, instructors, and learners by providing a comprehensive and user-friendly solution.</p>
-
-<p>At our core, we believe in the transformative power of education. We understand the challenges faced by institutions and instructors in delivering effective online learning experiences. Therefore, we have developed a robust system that streamlines various aspects of course management, enabling educators to focus on what they do best: teaching.</p>
-
-<p>Our platform offers a range of features designed to enhance the entire online learning process. From course creation and enrollment management to assignment tracking and grading, our system is equipped with tools that simplify administrative tasks and foster effective communication between instructors and students.</p>
-
-<p>One of our key priorities is user experience. We have meticulously designed our interface to be intuitive and easy to navigate, ensuring that both instructors and learners can quickly adapt to the platform. With a user-friendly interface, instructors can efficiently organize course materials, manage assignments, and track student progress, while students can easily access course content and collaborate with their peers.</p>
-
-<p>In addition, we understand the importance of data security and privacy in the digital age. Our platform incorporates robust security measures to protect sensitive information and ensure a safe learning environment for all users. We are committed to maintaining the highest standards of data protection and complying with relevant regulations.</p>
-
-<p>Whether you are an educational institution looking to optimize your online course offerings or an instructor seeking a reliable platform to manage your virtual classroom, our Online Course Management System is here to support you. Join us on this journey to revolutionize online education and unlock the full potential of virtual learning experiences.</p>
-
-<p>Thank you for choosing our Online Course Management System. We are excited to be part of your educational journey!</p>
-							
-						</div>
-					</div>
-				</div>
-				
-			</div>
-		</div>
-	</section>
-	<!-- Page end -->
 
 
 	
-	<!-- banner section end -->
-	<%
+			<%
 				signupcnt = 1;  
-		if(request.getParameter("Id")!=null || request.getParameter("Idt")!=null || request.getParameter("Ida") != null) signupcnt = 0;     
+				if(request.getParameter("Id")!=null || request.getParameter("Idt")!=null) signupcnt = 0;   
 			%>
 			<c:forEach var = "i" begin = "1" end = "<%= signupcnt%>">
 				<section class="banner-section spad">
@@ -212,8 +241,11 @@
 					</div>
 				</section>
 			</c:forEach>
-			<div class = "banner-section spad">
+	
+	<div class = "banner-section spad">
 	</div>
+	<!-- banner section end -->
+
 
 	<!-- footer section -->
 	<footer class="footer-section spad pb-0">
@@ -221,8 +253,8 @@
 			<div class="footer-warp">
 				<div class="row">
 					<div class="widget-item">
-						<h4>Contact Info</h4>
-						<ul class="mycourses-list">
+						<h4>contact Info</h4>
+						<ul class="contact-list">
 							<li>+880 1779224826</li>
 							<li>pealhasan6@gmail.com</li>
 						</ul>
@@ -274,10 +306,5 @@
 	<script src="js/circle-progress.min.js"></script>
 	<script src="js/owl.carousel.min.js"></script>
 	<script src="js/main.js"></script>
-
-
-	<!-- load for map -->
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWTIlluowDL-X4HbYQt3aDw_oi2JP0Krc&sensor=false"></script>
-	<script src="js/map.js"></script>
 </body>
 </html>

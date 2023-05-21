@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Course Registration</title>
+	<title>PoshTeam</title>
 	<style>
 		body {
 			background-color: #f7f7f7;

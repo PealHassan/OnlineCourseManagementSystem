@@ -1,7 +1,10 @@
+<%@ page import="java.sql.*,com.mysql.jdbc.Driver"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page import="java.net.URLEncoder" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>WebUni - Education Template</title>
+	<title>PoshTeam</title>
 	<meta charset="UTF-8">
 	<meta name="description" content="WebUni Education Template">
 	<meta name="keywords" content="webuni, education, creative, html">
@@ -44,13 +47,87 @@
 					</div>
 				</div>
 				<div class="col-lg-9 col-md-9">
-					<a href="Home.jsp" class="site-btn header-btn">Login</a>
+					<% 
+						String link;
+						if(request.getParameter("Id") != null || request.getParameter("Idt")!=null || request.getParameter("Ida") != null) link = "";
+						else link = "login.jsp";
+					%>
+					<a href="<%=link %>" class="site-btn header-btn">
+					<%
+						if(request.getParameter("Id") != null || request.getParameter("Idt")!=null || request.getParameter("Ida") != null) {
+							String url = "jdbc:mysql://localhost:3306/MiduPeal";
+						    String username = "root";
+						    String password = "midupeal";
+							Class.forName("com.mysql.jdbc.Driver");
+						    Connection con = DriverManager.getConnection(url,username,password);
+						    String sql = "select * from users where id = '";
+							if(request.getParameter("Id")!=null) sql += request.getParameter("Id");
+							if(request.getParameter("Idt")!=null) sql += request.getParameter("Idt");
+                            if(request.getParameter("Ida")!=null) sql += request.getParameter("Ida");
+							sql += "'";
+						    Statement st = con.createStatement();
+						    ResultSet rs = st.executeQuery(sql);
+						    rs.next();  
+						    out.println(rs.getString("username"));
+						}
+						else out.println("Log In");
+					%>
+					</a>
 					<nav class="main-menu">
+						<%
+							String index="index.jsp",aboutus="aboutus.jsp",courses="courses.jsp",mycourses="mycourses.jsp",classes="teacherCourses.jsp",addCourses = "addCourses.jsp";
+							if(request.getParameter("Id") != null) {
+								index = index + "?Id=" + request.getParameter("Id");
+								aboutus = aboutus + "?Id=" + request.getParameter("Id");
+								courses = courses + "?Id=" + request.getParameter("Id");
+								mycourses = mycourses + "?Id=" + request.getParameter("Id");
+							}
+							if(request.getParameter("Idt") != null) {
+								index = index + "?Idt=" + request.getParameter("Idt");
+								aboutus = aboutus + "?Idt=" + request.getParameter("Idt");
+								courses = courses + "?Idt=" + request.getParameter("Idt");
+								classes = classes + "?Idt=" + request.getParameter("Idt");
+							}
+                            if(request.getParameter("Ida") != null) {
+								index = index + "?Ida=" + request.getParameter("Ida");
+								aboutus = aboutus + "?Ida=" + request.getParameter("Ida");
+								courses = courses + "?Ida=" + request.getParameter("Ida");
+								addCourses = addCourses + "?Ida=" + request.getParameter("Ida");
+							}
+						%>
 						<ul>
-							<li><a href="index.jsp">Home</a></li>
-							<li><a href="aboutus.jsp">About us</a></li>
-							<li><a href="courses.jsp">Courses</a></li>
-							<li><a href="contact.jsp">Contact</a></li>
+							<li><a href="<%=index%>">Home</a></li>
+							<li><a href="<%=aboutus%>">About us</a></li>
+							<li><a href="<%=courses%>">Courses</a></li>
+							<%
+				                int signupcnt = 0;  
+				               if(request.getParameter("Id")!=null) signupcnt = 1;   
+			                %>
+							<c:forEach var = "i" begin = "1" end = "<%= signupcnt%>">
+								<li><a href="<%=mycourses%>">My Courses</a></li>
+							</c:forEach>
+							<%
+				                signupcnt = 0;  
+				               if(request.getParameter("Idt")!=null) signupcnt = 1;   
+			                %>
+							<c:forEach var = "i" begin = "1" end = "<%= signupcnt%>">
+								<li><a href="<%=classes%>">My Classes</a></li>
+							</c:forEach>
+							<%
+				                signupcnt = 0;  
+				               if(request.getParameter("Ida")!=null) signupcnt = 1;   
+			                %>
+							<c:forEach var = "i" begin = "1" end = "<%= signupcnt%>">
+								<li><a href="<%=addCourses%>">Add Course</a></li>
+							</c:forEach>
+							<%
+				                signupcnt = 0;  
+				                if(request.getParameter("Idt")!=null || request.getParameter("Id")!=null || request.getParameter("Ida") != null) signupcnt = 1;   
+			                %>
+							<c:forEach var = "i" begin = "1" end = "<%= signupcnt%>">
+								<li><a href="index.jsp">Log Out</a></li>
+							</c:forEach>
+							
 						</ul>
 					</nav>
 				</div>
@@ -65,17 +142,21 @@
 		<div class="container">
 			<div class="hero-text text-white">
 				<h2>Get The Best Free Online Courses</h2>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec malesuada lorem maximus mauris scelerisque, at rutrum nulla <br> dictum. Ut ac ligula sapien. Suspendisse cursus faucibus finibus.</p>
 			</div>
-			<div class="row">
-				<div class="col-lg-10 offset-lg-1">
-					<form class="intro-newslatter">
-						<input type="text" placeholder="Name">
-						<input type="text" class="last-s" placeholder="E-mail">
-						<button class="site-btn">Sign Up Now</button>
-					</form>
+			<%
+				signupcnt = 1;  
+				if(request.getParameter("Id")!=null || request.getParameter("Idt")!= null || request.getParameter("Ida") != null) signupcnt = 0;   
+			%>
+			<c:forEach var = "i" begin = "1" end = "<%= signupcnt%>">
+				<div class="row">
+					<div class="col-lg-10 offset-lg-1">
+						<form class="text-center pt-5" action = "signup.jsp">
+							
+							<button class="site-btn">Sign Up Now</button>
+						</form>
+					</div>
 				</div>
-			</div>
+			</c:forEach>
 		</div>
 	</section>
 	<!-- Hero section end -->
@@ -86,75 +167,46 @@
 		<div class="container">
 			<div class="section-title">
 				<h2>Our Course Categories</h2>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec malesuada lorem maximus mauris scelerisque, at rutrum nulla dictum. Ut ac ligula sapien. Suspendisse cursus faucibus finibus.</p>
 			</div>
 			<div class="row">
 				<!-- categorie -->
-				<div class="col-lg-4 col-md-6">
+				<% 
+					String url = "jdbc:mysql://localhost:3306/MiduPeal";
+					String username = "root";
+					String password = "midupeal";
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection con = DriverManager.getConnection(url,username,password);
+					String sql = "select distinct(category) from courses";
+					Statement st = con.createStatement();
+					ResultSet rs = st.executeQuery(sql);
+
+					String sql2 = "select count(distinct category) from courses";
+					Statement st2 = con.createStatement();  
+					ResultSet rs2 = st2.executeQuery(sql2);
+					rs2.next();
+					int val = rs2.getInt(1);
+				%>
+				<c:forEach var = "i" begin = "1" end = "<%=val%>">
+					<%rs.next();%>
+					<div class="col-lg-4 col-md-6">
 					<div class="categorie-item">
 						<div class="ci-thumb set-bg" data-setbg="img/categories/1.jpg"></div>
 						<div class="ci-text">
-							<h5>IT Development</h5>
-							<p>Lorem ipsum dolor sit amet, consectetur</p>
-							<span>120 Courses</span>
+							<h5><%=rs.getString("category")%></h5>
+							<span><% 
+								int cnt = 0;  
+								String sql3 = "select count(*) from courses where category = '" + rs.getString("category") + "'";
+								Statement st3 = con.createStatement();  
+					            ResultSet rs3 = st3.executeQuery(sql3);
+					            rs3.next();
+							    cnt = rs3.getInt(1);
+                                out.println(cnt);
+							%> Courses</span>
 						</div>
 					</div>
-				</div>
-				<!-- categorie -->
-				<div class="col-lg-4 col-md-6">
-					<div class="categorie-item">
-						<div class="ci-thumb set-bg" data-setbg="img/categories/2.jpg"></div>
-						<div class="ci-text">
-							<h5>Web Design</h5>
-							<p>Lorem ipsum dolor sit amet, consectetur</p>
-							<span>70 Courses</span>
-						</div>
-					</div>
-				</div>
-				<!-- categorie -->
-				<div class="col-lg-4 col-md-6">
-					<div class="categorie-item">
-						<div class="ci-thumb set-bg" data-setbg="img/categories/3.jpg"></div>
-						<div class="ci-text">
-							<h5>Illustration & Drawing</h5>
-							<p>Lorem ipsum dolor sit amet, consectetur</p>
-							<span>55 Courses</span>
-						</div>
-					</div>
-				</div>
-				<!-- categorie -->
-				<div class="col-lg-4 col-md-6">
-					<div class="categorie-item">
-						<div class="ci-thumb set-bg" data-setbg="img/categories/4.jpg"></div>
-						<div class="ci-text">
-							<h5>Social Media</h5>
-							<p>Lorem ipsum dolor sit amet, consectetur</p>
-							<span>40 Courses</span>
-						</div>
-					</div>
-				</div>
-				<!-- categorie -->
-				<div class="col-lg-4 col-md-6">
-					<div class="categorie-item">
-						<div class="ci-thumb set-bg" data-setbg="img/categories/5.jpg"></div>
-						<div class="ci-text">
-							<h5>Photoshop</h5>
-							<p>Lorem ipsum dolor sit amet, consectetur</p>
-							<span>220 Courses</span>
-						</div>
-					</div>
-				</div>
-				<!-- categorie -->
-				<div class="col-lg-4 col-md-6">
-					<div class="categorie-item">
-						<div class="ci-thumb set-bg" data-setbg="img/categories/6.jpg"></div>
-						<div class="ci-text">
-							<h5>Cryptocurrencies</h5>
-							<p>Lorem ipsum dolor sit amet, consectetur</p>
-							<span>25 Courses</span>
-						</div>
-					</div>
-				</div>
+				</div>	
+				</c:forEach>
+				
 			</div>
 		</div>
 	</section>
@@ -162,243 +214,148 @@
 
 
 	<!-- search section -->
-	<section class="search-section">
-		<div class="container">
-			<div class="search-warp">
-				<div class="section-title text-white">
-					<h2>Search your course</h2>
-				</div>
-				<div class="row">
-					<div class="col-md-10 offset-md-1">
-						<!-- search form -->
-						<form class="course-search-form">
-							<input type="text" placeholder="Course">
-							<input type="text" class="last-m" placeholder="Category">
-							<button class="site-btn">Search Couse</button>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- search section end -->
+	
 
+	<%
+		
+	    
+	    int tot = 0;
+		if(request.getParameter("Id") != null) {
+			String studentId = request.getParameter("Id");
+		    sql = String.format("(select course_id from enrollments where student_id = '%s')",studentId);
+		    sql2 = "select * from courses where course_id not in " + sql;
+		    st = con.createStatement();
+		    rs = st.executeQuery(sql2);
+		    
+		    st2 = con.createStatement();
+		    sql2 = "select count(*) from MiduPeal.courses where course_id not in " + sql;
+		    rs2 = st2.executeQuery(sql2);
+		    rs2.next();
+		    tot = rs2.getInt(1);
+		    
+		}
+		else {
+			String studentId = (String)(request.getParameter("Id"));
+		    sql2 = "select * from courses";
+		    st = con.createStatement();
+		    rs = st.executeQuery(sql2);
+		    st2 = con.createStatement();
+		    sql2 = "select count(*) from courses";
+		    rs2 = st2.executeQuery(sql2);
+		    rs2.next();
+		    tot = rs2.getInt(1);
+		}
+	    
+	    
+	    
+	%>
 
 	<!-- course section -->
-	<section class="course-section spad">
-		<div class="container">
-			<div class="section-title mb-0">
-				<h2>Featured Courses</h2>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec malesuada lorem maximus mauris scelerisque, at rutrum nulla dictum. Ut ac ligula sapien. Suspendisse cursus faucibus finibus.</p>
-			</div>
-		</div>
+	<section class="course-section spad pb-0">
 		<div class="course-warp">
 			<ul class="course-filter controls">
+				<%
+					
+					
+					String sql6 = "SELECT COUNT(DISTINCT category) FROM courses";
+					Statement st6 = con.createStatement();
+					ResultSet rs6 = st6.executeQuery(sql6);
+					rs6.next();
+					int unicat = rs6.getInt(1);
+					String sql5 = "select distinct(category) from courses";
+					Statement st5 = con.createStatement();
+					ResultSet rs5 = st5.executeQuery(sql5);
+				%>
 				<li class="control active" data-filter="all">All</li>
-				<li class="control" data-filter=".finance">Finance</li>
-				<li class="control" data-filter=".design">Design</li>
-				<li class="control" data-filter=".web">Web Development</li>
-				<li class="control" data-filter=".photo">Photography</li>
+				<c:forEach var = "i" begin = "1" end="<%=unicat %>">
+					<% rs5.next(); %>
+					<li class="control" data-filter="<%="."+rs5.getString("category")%>"><%=rs5.getString("category") %></li>
+				</c:forEach>
 			</ul>                                       
 			<div class="row course-items-area">
 				<!-- course -->
-				<div class="mix col-lg-3 col-md-4 col-sm-6 finance">
-					<div class="course-item">
-						<div class="course-thumb set-bg" data-setbg="img/courses/1.jpg">
-							<div class="price">Price: $15</div>
-						</div>
-						<div class="course-info">
-							<div class="course-text">
-								<h5>Art & Crafts</h5>
-								<p>Lorem ipsum dolor sit amet, consectetur</p>
-								<div class="students">120 Students</div>
+				<c:forEach var="i" begin="1" end="<%=tot%>">
+					<%rs.next();%>
+					<div class="<%= "mix col-lg-3 col-md-4 col-sm-6 " + rs.getString("category")%>">
+						<div class="course-item">
+							<div class="course-thumb set-bg" data-setbg="img/courses/2.jpg">
+								<div class="price"><%=rs.getString("course_id") %></div>
 							</div>
-							<div class="course-author">
-								<div class="ca-pic set-bg" data-setbg="img/authors/1.jpg"></div>
-								<p>William Parker, <span>Developer</span></p>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- course -->
-				<div class="mix col-lg-3 col-md-4 col-sm-6 design">
-					<div class="course-item">
-						<div class="course-thumb set-bg" data-setbg="img/courses/2.jpg">
-							<div class="price">Price: $15</div>
-						</div>
-						<div class="course-info">
-							<div class="course-text">
-								<h5>IT Development</h5>
-								<p>Lorem ipsum dolor sit amet, consectetur</p>
-								<div class="students">120 Students</div>
-							</div>
-							<div class="course-author">
-								<div class="ca-pic set-bg" data-setbg="img/authors/2.jpg"></div>
-								<p>William Parker, <span>Developer</span></p>
+							<div class="course-info">
+								<div class="course-text">
+									<h5><%= rs.getString("course_name") %></h5>
+									<p><%=rs.getString("course_description") %></p>
+									<div class="students"><%
+											String sql4 = "select count(*) from enrollments where course_id = '" + rs.getString("course_id")+"'";
+											Statement st4 = con.createStatement();
+											ResultSet rs4 = st4.executeQuery(sql4);
+											rs4.next();
+											out.println(rs4.getInt(1)); 
+									%> Students</div>
+								</div>
+								<div class="course-author">
+									<div class="ca-pic set-bg" data-setbg="img/authors/2.jpg"></div>
+									<p><%
+										String sql3 = "select * from MiduPeal.users where id = '" + rs.getString("teacher_id")+"'";
+										Statement st3 = con.createStatement();
+										ResultSet rs3 = st3.executeQuery(sql3);
+										rs3.next();
+										out.println(rs3.getString("username")); 
+									%></p>
+								</div>
+								
+								
 							</div>
 						</div>
 					</div>
-				</div>
-				<!-- course -->
-				<div class="mix col-lg-3 col-md-4 col-sm-6 web">
-					<div class="course-item">
-						<div class="course-thumb set-bg" data-setbg="img/courses/3.jpg">
-							<div class="price">Price: $15</div>
-						</div>
-						<div class="course-info">
-							<div class="course-text">
-								<h5>Graphic Design</h5>
-								<p>Lorem ipsum dolor sit amet, consectetur</p>
-								<div class="students">120 Students</div>
-							</div>
-							<div class="course-author">
-								<div class="ca-pic set-bg" data-setbg="img/authors/3.jpg"></div>
-								<p>William Parker, <span>Developer</span></p>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- course -->
-				<div class="mix col-lg-3 col-md-4 col-sm-6 photo">
-					<div class="course-item">
-						<div class="course-thumb set-bg" data-setbg="img/courses/4.jpg">
-							<div class="price">Price: $15</div>
-						</div>
-						<div class="course-info">
-							<div class="course-text">
-								<h5>IT Development</h5>
-								<p>Lorem ipsum dolor sit amet, consectetur</p>
-								<div class="students">120 Students</div>
-							</div>
-							<div class="course-author">
-								<div class="ca-pic set-bg" data-setbg="img/authors/4.jpg"></div>
-								<p>William Parker, <span>Developer</span></p>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- course -->
-				<div class="mix col-lg-3 col-md-4 col-sm-6 finance">
-					<div class="course-item">
-						<div class="course-thumb set-bg" data-setbg="img/courses/5.jpg">
-							<div class="price">Price: $15</div>
-						</div>
-						<div class="course-info">
-							<div class="course-text">
-								<h5>IT Development</h5>
-								<p>Lorem ipsum dolor sit amet, consectetur</p>
-								<div class="students">120 Students</div>
-							</div>
-							<div class="course-author">
-								<div class="ca-pic set-bg" data-setbg="img/authors/5.jpg"></div>
-								<p>William Parker, <span>Developer</span></p>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- course -->
-				<div class="mix col-lg-3 col-md-4 col-sm-6 design">
-					<div class="course-item">
-						<div class="course-thumb set-bg" data-setbg="img/courses/6.jpg">
-							<div class="price">Price: $15</div>
-						</div>
-						<div class="course-info">
-							<div class="course-text">
-								<h5>Socia Media</h5>
-								<p>Lorem ipsum dolor sit amet, consectetur</p>
-								<div class="students">120 Students</div>
-							</div>
-							<div class="course-author">
-								<div class="ca-pic set-bg" data-setbg="img/authors/6.jpg"></div>
-								<p>William Parker, <span>Developer</span></p>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- course -->
-				<div class="mix col-lg-3 col-md-4 col-sm-6 web">
-					<div class="course-item">
-						<div class="course-thumb set-bg" data-setbg="img/courses/7.jpg">
-							<div class="price">Price: $15</div>
-						</div>
-						<div class="course-info">
-							<div class="course-text">
-								<h5>IT Development</h5>
-								<p>Lorem ipsum dolor sit amet, consectetur</p>
-								<div class="students">120 Students</div>
-							</div>
-							<div class="course-author">
-								<div class="ca-pic set-bg" data-setbg="img/authors/7.jpg"></div>
-								<p>William Parker, <span>Developer</span></p>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- course -->
-				<div class="mix col-lg-3 col-md-4 col-sm-6 photo">
-					<div class="course-item">
-						<div class="course-thumb set-bg" data-setbg="img/courses/8.jpg">
-							<div class="price">Price: $15</div>
-						</div>
-						<div class="course-info">
-							<div class="course-text">
-								<h5>HTML 5</h5>
-								<p>Lorem ipsum dolor sit amet, consectetur</p>
-								<div class="students">120 Students</div>
-							</div>
-							<div class="course-author">
-								<div class="ca-pic set-bg" data-setbg="img/authors/8.jpg"></div>
-								<p>William Parker, <span>Developer</span></p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+					
+		
+				   
+				</c:forEach>
+				<script>
+					    // Select all the "Add Course" buttons
+					    const addCourseButtons = document.querySelectorAll('.act-btn');
+					
+					    // Add a click event listener to each "Add Course" button
+					    addCourseButtons.forEach((button) => {
+					        button.addEventListener('click', (event) => {
+					            event.preventDefault();
+					
+					            // Display the Sweet Alert
+					            swal("Course Enrolled!", "Your have been successfully Enrolled.", "success")
+					                .then(() => {
+					                    // Submit the form
+					                    button.parentElement.submit();
+					                });
+					        });
+					    });
+				</script> 
 		</div>
 	</section>
 	<!-- course section end -->
 
 
-	<!-- signup section -->
-	<section class="signup-section spad">
-		<div class="signup-bg set-bg" data-setbg="img/signup-bg.jpg"></div>
-		<div class="container-fluid">
-			<div class="row">
-				<div class="col-lg-6">
-					<div class="signup-warp">
-						<div class="section-title text-white text-left">
-							<h2>Sign up to became a teacher</h2>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec malesuada lorem maximus mauris scelerisque, at rutrum nulla dictum. Ut ac ligula sapien. Suspendisse cursus faucibus finibus.</p>
+	
+			<%
+				signupcnt = 1;  
+				if(request.getParameter("Id")!=null || request.getParameter("Idt")!=null || request.getParameter("Ida") != null) signupcnt = 0;   
+			%>
+			<c:forEach var = "i" begin = "1" end = "<%= signupcnt%>">
+				<section class="banner-section spad">
+					<div class="container">
+						<div class="section-title mb-0 pb-2">
+							<h2>Join Our Community Now!</h2>
+							
 						</div>
-						<!-- signup form -->
-						<form class="signup-form">
-							<input type="text" placeholder="Your Name">
-							<input type="text" placeholder="Your E-mail">
-							<input type="text" placeholder="Your Phone">
-							<label for="v-upload" class="file-up-btn">Upload Course</label>
-							<input type="file" id="v-upload">
-							<button class="site-btn">Search Couse</button>
-						</form>
+						<div class="text-center pt-5">
+							<a href="index.jsp" class="site-btn">Register Now</a>
+						</div>
 					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- signup section end -->
-
-
-	<!-- banner section -->
-	<section class="banner-section spad">
-		<div class="container">
-			<div class="section-title mb-0 pb-2">
-				<h2>Join Our Community Now!</h2>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec malesuada lorem maximus mauris scelerisque, at rutrum nulla dictum. Ut ac ligula sapien. Suspendisse cursus faucibus finibus.</p>
-			</div>
-			<div class="text-center pt-5">
-				<a href="#" class="site-btn">Register Now</a>
-			</div>
-		</div>
-	</section>
+				</section>
+			</c:forEach>
+	
+	<div class = "banner-section spad">
+	</div>
 	<!-- banner section end -->
 
 
@@ -408,11 +365,10 @@
 			<div class="footer-warp">
 				<div class="row">
 					<div class="widget-item">
-						<h4>Contact Info</h4>
+						<h4>contact Info</h4>
 						<ul class="contact-list">
-							<li>1481 Creekside Lane <br>Avila Beach, CA 931</li>
-							<li>+53 345 7953 32453</li>
-							<li>yourmail@gmail.com</li>
+							<li>+880 1779224826</li>
+							<li>pealhasan6@gmail.com</li>
 						</ul>
 					</div>
 					<div class="widget-item">
@@ -445,26 +401,11 @@
 							<li><a href="">System Engeneering</a></li>
 						</ul>
 					</div>
-					<div class="widget-item">
-						<h4>Newsletter</h4>
-						<form class="footer-newslatter">
-							<input type="email" placeholder="E-mail">
-							<button class="site-btn">Subscribe</button>
-							<p>*We don’t spam</p>
-						</form>
-					</div>
 				</div>
 			</div>
 		</div>
 		<div class="footer-bottom">
-			<div class="footer-warp">
-				<ul class="footer-menu">
-					<li><a href="#">Terms & Conditions</a></li>
-					<li><a href="#">Register</a></li>
-					<li><a href="#">Privacy</a></li>
-				</ul>
-				<div class="copyright"><a target="_blank" href="https://www.templateshub.net">Templates Hub</a></div>
-			</div>
+			<h5>Powered By PoshTeam</h5>
 		</div>
 	</footer> 
 	<!-- footer section end -->

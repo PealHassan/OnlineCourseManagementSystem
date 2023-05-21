@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Add Course</title>
+	<title>PoshTeam</title>
 	<style>
 		form {
 			
@@ -96,7 +96,13 @@
 		<input type="text" id="course-name" name="course_name" placeholder="Enter course name" required>
 		<label><b>Course ID</b></label>
 		<input type="text" name="courseId" required>
+		<label><b>Category</b></label>
+		<input type="text" id="course-name" name="category" placeholder="Category" required>
+		
+		
 		<label for="teacher"><b>Teacher:</b></label>
+		
+		
 		<select id="teacher" name="teacher_name">
 			<option value="Mr. John Doe">Mr. John Doe</option>
 			<option value="Ms. Jane Smith">Ms. Jane Smith</option>

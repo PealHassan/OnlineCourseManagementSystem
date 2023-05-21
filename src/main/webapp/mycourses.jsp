@@ -1,5 +1,6 @@
 <%@ page import="java.sql.*,com.mysql.jdbc.Driver"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="java.net.URLEncoder" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,6 +28,7 @@
 	<![endif]-->
 
 </head>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <body>
 	<!-- Page Preloder -->
 	<div id="preloder">
@@ -48,12 +50,12 @@
 				<div class="col-lg-9 col-md-9">
 					<% 
 						String link;
-						if(request.getParameter("Id") != null || request.getParameter("Idt")!=null || request.getParameter("Ida") != null) link = "";
+						if(request.getParameter("Id") != null || request.getParameter("Idt")!=null) link = "";
 						else link = "login.jsp";
 					%>
 					<a href="<%=link %>" class="site-btn header-btn">
 					<%
-						if(request.getParameter("Id") != null || request.getParameter("Idt")!=null || request.getParameter("Ida") != null) {
+						if(request.getParameter("Id") != null || request.getParameter("Idt")!=null) {
 							String url = "jdbc:mysql://localhost:3306/MiduPeal";
 						    String username = "root";
 						    String password = "midupeal";
@@ -62,7 +64,6 @@
 						    String sql = "select * from users where id = '";
 							if(request.getParameter("Id")!=null) sql += request.getParameter("Id");
 							if(request.getParameter("Idt")!=null) sql += request.getParameter("Idt");
-							if(request.getParameter("Ida")!=null) sql += request.getParameter("Ida");
 							sql += "'";
 						    Statement st = con.createStatement();
 						    ResultSet rs = st.executeQuery(sql);
@@ -74,24 +75,18 @@
 					</a>
 					<nav class="main-menu">
 						<%
-							String index="index.jsp",aboutus="aboutus.jsp",courses="courses.jsp",mycourses="mycourses.jsp",classes="teacherCourses.jsp",addCourses = "addCourses.jsp";
+							String index="index.jsp",aboutus="aboutus.jsp",courses="courses.jsp",contact="contact.jsp",classes="teacherCourses.jsp";
 							if(request.getParameter("Id") != null) {
 								index = index + "?Id=" + request.getParameter("Id");
 								aboutus = aboutus + "?Id=" + request.getParameter("Id");
 								courses = courses + "?Id=" + request.getParameter("Id");
-								mycourses = mycourses + "?Id=" + request.getParameter("Id");
+								contact = contact + "?Id=" + request.getParameter("Id");
 							}
 							if(request.getParameter("Idt") != null) {
 								index = index + "?Idt=" + request.getParameter("Idt");
 								aboutus = aboutus + "?Idt=" + request.getParameter("Idt");
 								courses = courses + "?Idt=" + request.getParameter("Idt");
 								classes = classes + "?Idt=" + request.getParameter("Idt");
-							}
-                            if(request.getParameter("Ida") != null) {
-								index = index + "?Ida=" + request.getParameter("Ida");
-								aboutus = aboutus + "?Ida=" + request.getParameter("Ida");
-								courses = courses + "?Ida=" + request.getParameter("Ida");
-								addCourses = addCourses + "?Ida=" + request.getParameter("Ida");
 							}
 						%>
 						<ul>
@@ -103,7 +98,7 @@
 				               if(request.getParameter("Id")!=null) signupcnt = 1;   
 			                %>
 							<c:forEach var = "i" begin = "1" end = "<%= signupcnt%>">
-								<li><a href="<%=mycourses%>">My Courses</a></li>
+								<li><a href="<%=contact%>">My Courses</a></li>
 							</c:forEach>
 							<%
 				                signupcnt = 0;  
@@ -114,14 +109,7 @@
 							</c:forEach>
 							<%
 				                signupcnt = 0;  
-				               if(request.getParameter("Ida")!=null) signupcnt = 1;   
-			                %>
-							<c:forEach var = "i" begin = "1" end = "<%= signupcnt%>">
-								<li><a href="<%=addCourses%>">Add Course</a></li>
-							</c:forEach>
-							<%
-				                signupcnt = 0;  
-				                if(request.getParameter("Idt")!=null || request.getParameter("Id")!=null || request.getParameter("Ida") != null) signupcnt = 1;   
+				                if(request.getParameter("Idt")!=null || request.getParameter("Id")!=null) signupcnt = 1;   
 			                %>
 							<c:forEach var = "i" begin = "1" end = "<%= signupcnt%>">
 								<li><a href="index.jsp">Log Out</a></li>
@@ -129,6 +117,7 @@
 							
 						</ul>
 					</nav>
+				</div>
 			</div>
 		</div>
 	</header>
@@ -136,11 +125,11 @@
 
 
 	<!-- Page info -->
-	<div class="page-info-section set-bg" data-setbg="img/page-bg/4.jpg">
+	<div class="page-info-section set-bg" data-setbg="img/page-bg/1.jpg">
 		<div class="container">
 			<div class="site-breadcrumb">
-				<a href="<%=index %>">Home</a>
-				<span>About Us</span>
+				<a href="<%=index%>">Home</a>
+				<span>Your Courses</span>
 			</div>
 		</div>
 	</div>
@@ -148,56 +137,108 @@
 
 
 	<!-- search section -->
-	<section class="search-section ss-other-page">
-		<div class="container">
-			<div class="search-warp">
-				<div class="section-title text-white">
-					<h1><span>About Us</span></h1>
-				</div>
-				
-			</div>
-		</div>
-	</section>
+	
+	
+	<!-- Header section end -->
 	<!-- search section end -->
+	<%
+		String url = "jdbc:mysql://localhost:3306/MiduPeal";
+	    String username = "root";
+	    String password = "midupeal";
+	    Class.forName("com.mysql.jdbc.Driver");
+	    Connection con = DriverManager.getConnection(url,username,password);
+	    ResultSet rs;
+	    int tot = 0;
+		
+			String studentId = request.getParameter("Id");
+		    String sql = String.format("(select course_id from enrollments where student_id = '%s')",studentId);
+		    String sql2 = "select * from courses where course_id in " + sql;
+		    Statement st = con.createStatement();
+		    rs = st.executeQuery(sql2);
+		    
+		    Statement st2 = con.createStatement();
+		    sql2 = "select count(*) from MiduPeal.courses where course_id in " + sql;
+		    ResultSet rs2 = st2.executeQuery(sql2);
+		    rs2.next();
+		    tot = rs2.getInt(1);
+		    
+		
+	    
+	    
+	    
+	%>
 
-
-
-	<!-- Page -->
-	<section class="mycourses-page spad pb-0">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-10 offset-lg-1">
-					<div class="search-warp">
-						<div class="section-title text-white text-left">
-							<p>Welcome to our Online Course Management System! We are a leading platform dedicated to simplifying the management and administration of online courses. Our mission is to empower educational institutions, instructors, and learners by providing a comprehensive and user-friendly solution.</p>
-
-<p>At our core, we believe in the transformative power of education. We understand the challenges faced by institutions and instructors in delivering effective online learning experiences. Therefore, we have developed a robust system that streamlines various aspects of course management, enabling educators to focus on what they do best: teaching.</p>
-
-<p>Our platform offers a range of features designed to enhance the entire online learning process. From course creation and enrollment management to assignment tracking and grading, our system is equipped with tools that simplify administrative tasks and foster effective communication between instructors and students.</p>
-
-<p>One of our key priorities is user experience. We have meticulously designed our interface to be intuitive and easy to navigate, ensuring that both instructors and learners can quickly adapt to the platform. With a user-friendly interface, instructors can efficiently organize course materials, manage assignments, and track student progress, while students can easily access course content and collaborate with their peers.</p>
-
-<p>In addition, we understand the importance of data security and privacy in the digital age. Our platform incorporates robust security measures to protect sensitive information and ensure a safe learning environment for all users. We are committed to maintaining the highest standards of data protection and complying with relevant regulations.</p>
-
-<p>Whether you are an educational institution looking to optimize your online course offerings or an instructor seeking a reliable platform to manage your virtual classroom, our Online Course Management System is here to support you. Join us on this journey to revolutionize online education and unlock the full potential of virtual learning experiences.</p>
-
-<p>Thank you for choosing our Online Course Management System. We are excited to be part of your educational journey!</p>
-							
+	<!-- course section -->
+	<section class="course-section spad pb-0">
+		<div class="course-warp">
+			<ul class="course-filter controls">
+				<%
+					
+					
+					String sql6 = "SELECT COUNT(DISTINCT category) FROM courses";
+					Statement st6 = con.createStatement();
+					ResultSet rs6 = st6.executeQuery(sql6);
+					rs6.next();
+					int unicat = rs6.getInt(1);
+					String sql5 = "select distinct(category) from courses";
+					Statement st5 = con.createStatement();
+					ResultSet rs5 = st5.executeQuery(sql5);
+				%>
+				<li class="control active" data-filter="all">All</li>
+				<c:forEach var = "i" begin = "1" end="<%=unicat %>">
+					<% rs5.next(); %>
+					<li class="control" data-filter="<%="."+rs5.getString("category")%>"><%=rs5.getString("category") %></li>
+				</c:forEach>
+			</ul>                                       
+			<div class="row course-items-area">
+				<!-- course -->
+				<c:forEach var="i" begin="1" end="<%=tot%>">
+					<%rs.next();%>
+					<div class="<%= "mix col-lg-3 col-md-4 col-sm-6 " + rs.getString("category")%>">
+						<div class="course-item">
+							<div class="course-thumb set-bg" data-setbg="img/courses/2.jpg">
+								<div class="price"><%=rs.getString("course_id") %></div>
+							</div>
+							<div class="course-info">
+								<div class="course-text">
+									<h5><%= rs.getString("course_name") %></h5>
+									<p><%=rs.getString("course_description") %></p>
+									<div class="students"><%
+											String sql4 = "select count(*) from enrollments where course_id = '" + rs.getString("course_id")+"'";
+											Statement st4 = con.createStatement();
+											ResultSet rs4 = st4.executeQuery(sql4);
+											rs4.next();
+											out.println(rs4.getInt(1)); 
+									%> Students</div>
+								</div>
+								<div class="course-author">
+									<div class="ca-pic set-bg" data-setbg="img/authors/2.jpg"></div>
+									<p><%
+										String sql3 = "select * from MiduPeal.users where id = '" + rs.getString("teacher_id")+"'";
+										Statement st3 = con.createStatement();
+										ResultSet rs3 = st3.executeQuery(sql3);
+										rs3.next();
+										out.println(rs3.getString("username")); 
+									%></p>
+								</div>
+								
+								
+							</div>
 						</div>
 					</div>
-				</div>
-				
-			</div>
+					
+		
+				   
+				</c:forEach>
 		</div>
 	</section>
-	<!-- Page end -->
+	<!-- course section end -->
 
 
 	
-	<!-- banner section end -->
-	<%
+			<%
 				signupcnt = 1;  
-		if(request.getParameter("Id")!=null || request.getParameter("Idt")!=null || request.getParameter("Ida") != null) signupcnt = 0;     
+			if(request.getParameter("Id")!=null || request.getParameter("Idt")!=null) signupcnt = 0;   
 			%>
 			<c:forEach var = "i" begin = "1" end = "<%= signupcnt%>">
 				<section class="banner-section spad">
@@ -212,8 +253,11 @@
 					</div>
 				</section>
 			</c:forEach>
-			<div class = "banner-section spad">
+	
+	<div class = "banner-section spad">
 	</div>
+	<!-- banner section end -->
+
 
 	<!-- footer section -->
 	<footer class="footer-section spad pb-0">
@@ -222,7 +266,7 @@
 				<div class="row">
 					<div class="widget-item">
 						<h4>Contact Info</h4>
-						<ul class="mycourses-list">
+						<ul class="contact-list">
 							<li>+880 1779224826</li>
 							<li>pealhasan6@gmail.com</li>
 						</ul>
@@ -274,10 +318,5 @@
 	<script src="js/circle-progress.min.js"></script>
 	<script src="js/owl.carousel.min.js"></script>
 	<script src="js/main.js"></script>
-
-
-	<!-- load for map -->
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWTIlluowDL-X4HbYQt3aDw_oi2JP0Krc&sensor=false"></script>
-	<script src="js/map.js"></script>
 </body>
 </html>

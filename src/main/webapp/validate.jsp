@@ -4,13 +4,12 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Login Result</title>
+  <title>PoshTeam</title>
 </head>
 <body>
   <%
     String username = request.getParameter("username");
     String password = request.getParameter("password");
-    String usertype = request.getParameter("user_type"); 
     String url = "jdbc:mysql://localhost:3306/MiduPeal";
     String user = "root";
     String pass = "midupeal";
@@ -23,14 +22,15 @@
     
     boolean loggedIn = false;  
     while (rs.next()) {
-      if (rs.getString("username").equals(username) && rs.getString("password").equals(password) && rs.getString("user_type").equals(usertype)) {
+      if (rs.getString("username").equals(username) && rs.getString("password").equals(password)) {
         loggedIn = true;
+        String usertype = rs.getString("user_type");
         if (usertype.equals("student")) {
-          response.sendRedirect(String.format("CourseEnroll.jsp?%sId=%s&usertype=%s", usertype, rs.getString("id"), usertype));
+          response.sendRedirect(String.format("index.jsp?Id=%s&usertype=%s", rs.getString("id"), usertype));
         } else if (usertype.equals("admin")) {
-          response.sendRedirect(String.format("AdminPage.jsp?%sId=%s&usertype=%s", usertype, rs.getString("id"), usertype));
+          response.sendRedirect(String.format("index.jsp?Ida=%s&usertype=%s", rs.getString("id"), usertype));
         } else if (usertype.equals("teacher")) {
-          response.sendRedirect(String.format("TeacherPage.jsp?%sId=%s&usertype=%s", usertype, rs.getString("id"), usertype));
+          response.sendRedirect(String.format("index.jsp?Idt=%s&usertype=%s", rs.getString("id"), usertype));
         }
         
         break;
@@ -38,7 +38,7 @@
     }
     if (!loggedIn) {
         String errorMessage = "Username or password is incorrect.";
-        response.sendRedirect("Home.jsp?status=FAILED&errorMessage=" + URLEncoder.encode(errorMessage, "UTF-8"));
+        response.sendRedirect("login.jsp?status=FAILED&errorMessage=" + URLEncoder.encode(errorMessage, "UTF-8"));
     }
 
 %>

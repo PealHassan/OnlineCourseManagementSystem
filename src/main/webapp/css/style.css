@@ -251,6 +251,11 @@ ol {
 		border-left-color: transparent;
 	}
 }
+/* CSS for the drop-down menu */
+
+.revsite {
+	color: #000000;
+}
 
 /*------------------
   Header section
@@ -266,6 +271,7 @@ ol {
 
 .site-logo {
 	display: inline-block;
+	
 }
 
 .main-menu ul {
@@ -331,6 +337,19 @@ ol {
 
 .intro-newslatter .site-btn {
 	min-width: 214px;
+}
+.act-btn {
+	display: inline-block;
+	min-width: 196px;
+	text-align: center;
+	border: none;
+	padding: 15px 10px;
+	font-weight: 600;
+	font-size: 16px;
+	position: relative;
+	color: #fff;
+	cursor: pointer;
+	background: #d82a4e;
 }
 
 /*------------------
@@ -637,7 +656,9 @@ ol {
 
 .signup-form input[type=text],
 .signup-form input[type=email],
+.signup-form input[type=password],
 .signup-form textarea,
+.contact-form input[type=password],
 .contact-form input[type=text],
 .contact-form input[type=email],
 .contact-form textarea {
@@ -654,7 +675,9 @@ ol {
 
 .signup-form input[type=text]:focus,
 .signup-form input[type=email]:focus,
+.signup-form input[type=password]:focus,
 .signup-form textarea:focus,
+.contact-form input[type=password]:focus,
 .contact-form input[type=text]:focus,
 .contact-form input[type=email]:focus,
 .contact-form textarea:focus {
@@ -794,7 +817,6 @@ ol {
 	background: #edf4f6;
 	padding: 20px 0;
 	margin-top: 50px;
-	margin-bottom: 20px;
 	text-align: center;
 }
 
@@ -1189,12 +1211,57 @@ ol {
 	color: #000000;
 	padding: 45px 47px;
 }
+/* Login section styles */
+.login-section {
+  padding: 80px 0;
+  
+}
+
+.login-form {
+  background-color: #f6f6f6;
+  padding: 40px;
+  border-radius: 5px;
+}
+
+.login-form form {
+  margin-bottom: 0;
+}
+
+.login-form .form-group {
+  margin-bottom: 20px;
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.login-form button[type="submit"] {
+  display: block;
+  width: 100%;
+  padding: 12px 20px;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.login-form button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+@media (max-width: 768px) {
+  .login-section {
+    padding: 60px 0;
+  }
+}
 
 
-
-
-
-.
 #map-canvas {
 	height: 484px;
 	margin-top: 58px;
